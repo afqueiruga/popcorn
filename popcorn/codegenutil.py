@@ -1,0 +1,14 @@
+from sympy import ccode, Matrix
+
+def assignment(expr,asgn, op="="):
+    if type(asgn) is str:
+        lines = ["/* Evaluate {0} */".format(asgn)]
+        for i,p in enumerate(expr):
+            lines += [ ccode( p, "{0}[{1}]".format(asgn,i) ).replace("=",op) ]
+    elif type(asgn) is Matrix:
+        lines = ["/* Evaluating something */"]
+        for i,(p,a) in enumerate(zip(expr,asgn)):
+            lines += [ ccode( p, a ).replace("=",op) ]
+    else:
+        lines += []
+    return "\n".join(lines)

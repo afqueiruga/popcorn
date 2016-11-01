@@ -1,4 +1,5 @@
 import boilerplates as b
+from util import *
 from sympy import ccode, Symbol, sympify
 
 class PopcornVariable():
@@ -38,7 +39,7 @@ class PopcornVariable():
 
 class Input( PopcornVariable ):
     def __init__(self, name, dspace):
-        PopcornVariable.__init__(self, name, 1, dspace.size(), offset=0)
+        PopcornVariable.__init__(self, name, 1, sympify(dspace.size()), offset=0)
         self.dspace = dspace
     
     def Entry_Handle(self,i,v=0):
@@ -47,7 +48,7 @@ class Input( PopcornVariable ):
         if self.dspace.v_end < 0:
             raise Exception("Can't seperate entries for variable length inputs")
         else:
-            return [ Entry_Handle(i) for i in self.dspace.size() ]
+            return [ self.Entry_Handle(i) for i in self.dspace.size() ]
         
     def Vertex_Handle(self,i):
         return MyMat(self.name,self.dspace.dim,offset = i*self.dspace.dim)
@@ -55,14 +56,15 @@ class Input( PopcornVariable ):
         if self.dspace.v_end < 0:
             raise Exception("Can't seperate vertices for variable length inputs")
         else:
-            return [ Vertex_Handle(i)
+            return [ self.Vertex_Handle(i)
                      for i in xrange(self.dspace.v_end-self.dspace.v_start) ]
 
 
 class Output( PopcornVariable ):
     def __init__(self, name, dspaces, rank):
         self.dspaces = dspaces
-        PopcornVariable.__init__(self, name, rank, self.size(), offset=0)
+        self.rank = rank
+        PopcornVariable.__init__(self, name, rank, sympify(self.size()), offset=0)
 
     def size(self):
         if self.rank==0:
