@@ -81,7 +81,7 @@ class Kernel():
         iiter=""
         for i,d in enumerate(self.inputs):
             argstring += "in"+str(iiter)+", "
-            iiter += "+"+ d.dspace.size()
+            iiter += "+"+ sanitize(d.dspace.size())
             # TODO: RAISE ERROR for variable length input not at end
         argstring += "\n"
         iiter=""

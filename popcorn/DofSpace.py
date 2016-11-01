@@ -9,9 +9,9 @@ class DofSpace():
         
     def size(self):
         if self.v_start is int and self.v_start < 0:
-            return str(self.dim)
+            return (self.dim)
         else:
-            return sanitize(self.dim*(self.v_end-self.v_start))
+            return (self.dim*(self.v_end-self.v_start))
 
     def emit(self,cnt):
         if not self.v_start == -1:

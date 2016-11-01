@@ -23,8 +23,8 @@ i_params = Input("params",Param)
 o_R = Output("R", [PtVec], 1)
 o_K = Output("K", [PtVec], 2)
 
-x0,x1 = i_x.Vertex_Split() # Split into blocks of gdim
-K, L = i_params.Entry_Split() # split into each entry in the vector
+x0,x1 = i_x.Vertex_Handles(0,1) # Split into blocks of gdim
+K, L0 = i_params.Entry_Handles(0,1) # split into each entry in the vector
 
 r = x1 - x0
 rabs = sqrt((r.T*r)[0,0])
@@ -45,10 +45,7 @@ kernel_linear_spring = Kernel("linear_spring",
                               listing=prgm)
 
 # Write a husk
-modname = "husk_pair_bond" # This will name the folder
-pylink("pair_bond",
-       [ kernel_linear_spring ],
-       targetdir=modname)
+Husk("pair_bond", [ kernel_linear_spring ])
 # There's now a folder filled with files. Look at 'em.
 # You have the following options:
 # 1) cd into the folder and type "make". That'll use swig
