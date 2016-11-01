@@ -2,7 +2,7 @@ import boilerplates as b
 from sympy import ccode, Symbol, sympify
 
 class PopcornVariable():
-    def __init__(self, name, rank, dim, offset=None, depends = []):
+    def __init__(self, name, rank, dim, offset=None ):
         self.name = name
         self.rank = rank
         self.dim = dim
@@ -11,7 +11,6 @@ class PopcornVariable():
         else:
             self.offset = offset
         self.lda = tuple([ dim**(rank-i-1) for i in xrange(rank)])
-        self.depends = depends
     def emit(self):
         return "real_t {0}[{1}];{{int i; for(i= 0;i<{1};i++) {0}[i]=0.0;}}".format(self.name,self.dim**self.rank)
     def __getitem__(self, index):
@@ -35,3 +34,42 @@ class PopcornVariable():
         else:
             return MyMat(self.name, self.dim,self.dim,offset=0)
     
+
+
+class Input( PopcornVariable ):
+    def __init__(self, name, dspace):
+        PopcornVariable.__init__(self, name, 1, dspace.size(), offset=0)
+        self.dspace = dspace
+    
+    def Entry_Handle(self,i,v=0):
+        return Symbol(self.name+"["+str(v*self.dspace.dim+i)+"]")
+    def Entry_Split(self):
+        if self.dspace.v_end < 0:
+            raise Exception("Can't seperate entries for variable length inputs")
+        else:
+            return [ Entry_Handle(i) for i in self.dspace.size() ]
+        
+    def Vertex_Handle(self,i):
+        return MyMat(self.name,self.dspace.dim,offset = i*self.dspace.dim)
+    def Vertex_Split(self):
+        if self.dspace.v_end < 0:
+            raise Exception("Can't seperate vertices for variable length inputs")
+        else:
+            return [ Vertex_Handle(i)
+                     for i in xrange(self.dspace.v_end-self.dspace.v_start) ]
+
+
+class Output( PopcornVariable ):
+    def __init__(self, name, dspaces, rank):
+        self.dspaces = dspaces
+        PopcornVariable.__init__(self, name, rank, self.size(), offset=0)
+
+    def size(self):
+        if self.rank==0:
+            return "1"
+        else:
+            size = "+".join([d.size() for d in self.dspaces])
+            if self.rank==1:
+                return size
+            else:
+                return "({0})*({0})".format(size)
