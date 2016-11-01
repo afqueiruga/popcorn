@@ -45,7 +45,9 @@ kernel_linear_spring = Kernel("linear_spring",
                               listing=prgm)
 
 # Write a husk
+from popcorn import boilerplates
 Husk("pair_bond", [ kernel_linear_spring ])
+         # config=boilerplates.pylink.config_osx) # TODO: config selection not here
 # There's now a folder filled with files. Look at 'em.
 # You have the following options:
 # 1) cd into the folder and type "make". That'll use swig

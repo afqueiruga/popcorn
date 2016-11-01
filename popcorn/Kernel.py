@@ -1,6 +1,7 @@
 from boilerplates import general as g
 from boilerplates import afq_wrap as aw
 from codegenutil import *
+from util import *
 from sympy import ccode
 
 from collections import OrderedDict
@@ -81,13 +82,13 @@ class Kernel():
         iiter=""
         for i,d in enumerate(self.inputs):
             argstring += "in"+str(iiter)+", "
-            iiter += "+"+ sanitize(d.dspace.size())
+            iiter += "+"+ int_sanitize(d.dspace.size())
             # TODO: RAISE ERROR for variable length input not at end
         argstring += "\n"
         iiter=""
         for i,op in enumerate(self.outputs):
             argstring += "out"+str(iiter)+", "
-            iiter += "+"+op.size()
+            iiter += "+" + int_sanitize(op.size())
         argstring = argstring[:-2]
         
         return aw.eval_wr.format(self.name, argstring)

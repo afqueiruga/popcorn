@@ -29,8 +29,8 @@ void kmap_{cnt}(int * edge, int l_edge, int * verts, int * n, int * dim) {{
 """.format(
     cnt = cnt,
     dim = self.dim,
-    vlen = sanitize(self.v_end - self.v_start),
-    start = sanitize(self.v_start),
+    vlen = int_sanitize(self.v_end - self.v_start),
+    start = int_sanitize(self.v_start),
     vstride = self.v_stride)
         else:
             return """\

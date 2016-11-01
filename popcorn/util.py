@@ -21,7 +21,7 @@ def MyMat(name, m,n=0,offset=0, SYMTYPE=Symbol):
             for j in xrange(n) ] for i in xrange(m)])
 
 
-def sanitize(result):
+def int_sanitize(result):
     #print result
     try:
         return "(int)("+ccode(result)+")"
