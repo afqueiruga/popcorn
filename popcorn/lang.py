@@ -40,8 +40,8 @@ class Loop():
         bodycode = "\n".join([ l.emit() for l in self.body ])
         
         return b.lang.loop_fmt.format(ix=self.index,
-                                      st=sanitize(self.start),
-                                      end=sanitize(self.end),
+                                      st=int_sanitize(self.start),
+                                      end=int_sanitize(self.end),
                                       body=bodycode)
 
 class DebugPrint():

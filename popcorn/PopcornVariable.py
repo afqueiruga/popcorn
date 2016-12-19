@@ -3,7 +3,7 @@ from util import *
 from sympy import ccode, Symbol, sympify
 
 class PopcornVariable():
-    def __init__(self, name, rank, dim, offset=None ):
+    def __init__(self, name, dim, rank,  offset=None ):
         self.name = name
         self.rank = rank
         self.dim = dim
@@ -25,7 +25,8 @@ class PopcornVariable():
         
         return Symbol("{0}[{1}]".format(self.name,ccode(sympify(S))))
     def View(self,offset):
-        return TensorVariable(self.name,self.rank,self.dim, [a+b for a,b in zip(self.offset,offset)])
+        return PopcornVariable(self.name,self.dim,self.rank,
+                                   [a+b for a,b in zip(self.offset,offset)])
 
     def as_matrix(self):
         if self.rank==0:
@@ -39,7 +40,7 @@ class PopcornVariable():
 
 class Input( PopcornVariable ):
     def __init__(self, name, dspace):
-        PopcornVariable.__init__(self, name, 1, dspace.size(), offset=0)
+        PopcornVariable.__init__(self, name, dspace.size(), 1, offset=0)
         self.dspace = dspace
     
     def Entry_Handle(self,i):
@@ -73,14 +74,15 @@ class Output( PopcornVariable ):
     def __init__(self, name, dspaces, rank):
         self.dspaces = dspaces
         self.rank = rank
-        PopcornVariable.__init__(self, name, rank, self.size(), offset=(0,0))
+        PopcornVariable.__init__(self, name, self.size(), rank, offset=(0,0))
 
     def size(self):
         if self.rank==0:
             return 1
         else:
             size = sum([d.size() for d in self.dspaces])
-            if self.rank==1:
-                return size
-            else:
-                return size*size
+            return size
+            # if self.rank==1:
+                # return size
+            # else:
+                # return size*size
