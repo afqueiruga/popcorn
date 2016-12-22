@@ -80,7 +80,16 @@ bigheader = """
 """
 
 initfile = """\
-import {libname}_lib
+try:
+    import {libname}_lib
+except ImportError:
+    from subprocess import call
+    import os
+    p = os.path.dirname(os.path.abspath(__file__))
+
+    call(['cmake',p], cwd=p)
+    call(['make'],  cwd=p)
+    import {libname}_lib
 {0}
 """
 importline = "kernel_{0} = {libname}_lib.cvar.kernel_{0}"
@@ -94,3 +103,31 @@ set(KERNEL_FILES
     PARENT_SCOPE)
 """
 cmakelists_add_src = " ${{CMAKE_CURRENT_SOURCE_DIR}}/{0}.c "
+
+
+cmakelists2 = """
+cmake_minimum_required(VERSION 2.8.9)
+
+set(huskname {libname})
+
+set(KERNEL_INCLUDES ${{CMAKE_CURRENT_SOURCE_DIR}})
+set(KERNEL_FILES
+  {0}
+)
+
+# Required: Cornflakes
+list(APPEND CMAKE_MODULE_PATH "$ENV{{CORNFLAKES_DIR}}/cmake")
+include(cornflakes)
+include_directories(${{CORNFLAKES_INCLUDES}})
+find_package(SWIG REQUIRED)
+include(${{SWIG_USE_FILE}})
+set(CMAKE_SWIG_FLAGS "")
+find_package(PythonLibs)
+include_directories(${{PYTHON_INCLUDE_PATH}})
+include_directories(${{KERNEL_INCLUDES}})
+
+swig_add_module(${{huskname}}_lib python ${{huskname}}_swig.i ${{KERNEL_FILES}})
+set_property(SOURCE ${{KERNEL_FILES}} APPEND_STRING PROPERTY COMPILE_FLAGS " -fPIC")
+
+swig_link_libraries(${{huskname}}_lib m ${{PYTHON_LIBRARIES}})
+"""

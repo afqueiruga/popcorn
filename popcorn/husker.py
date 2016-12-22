@@ -14,9 +14,9 @@ def Husk(libname,kernels,installdir=".",config=BP.config_linux):
     d = {"libname":libname,"kernels":" ".join(kernelnames)}
     d.update(config)
     
-    mf = open(targetdir+"Makefile","w")    
-    mf.write(BP.makefile.format(**d))
-    mf.close()
+    # mf = open(targetdir+"Makefile","w")    
+    # mf.write(BP.makefile.format(**d))
+    # mf.close()
 
     sf = open(targetdir+libname+"_swig.i","w")    
     sf.write(BP.wrapper.format(
@@ -38,7 +38,7 @@ def Husk(libname,kernels,installdir=".",config=BP.config_linux):
     bigheader.close()
 
     cmakelists = open(targetdir+"CMakeLists.txt","w")
-    cmakelists.write(BP.cmakelists.format(
+    cmakelists.write(BP.cmakelists2.format(
         "\n".join([BP.cmakelists_add_src.format(n) for n in kernelnames]),
         **d))
     cmakelists.close()
