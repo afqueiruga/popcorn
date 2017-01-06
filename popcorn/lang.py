@@ -15,9 +15,9 @@ class Asgn():
             it =  PRI(*[xrange(j) for j in self.expr.shape])
         except:
             it = xrange(len(self.expr))
-            print it
+            # print it
         for i in it:
-            print i
+            # print i
             lines += [ ccode( self.expr[i],self.asgn[i] ).replace(" =",self.op) ]
         return "\n".join(lines)
 

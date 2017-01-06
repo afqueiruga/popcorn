@@ -80,13 +80,13 @@ bigheader = """
 """
 
 initfile = """\
+from subprocess import call
+import os
+p = os.path.dirname(os.path.abspath(__file__))
+call(['make'], cwd=p)
 try:
     import {libname}_lib
 except ImportError:
-    from subprocess import call
-    import os
-    p = os.path.dirname(os.path.abspath(__file__))
-
     call(['cmake',p], cwd=p)
     call(['make'],  cwd=p)
     import {libname}_lib
