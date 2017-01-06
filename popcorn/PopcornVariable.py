@@ -74,15 +74,16 @@ class Output( PopcornVariable ):
     def __init__(self, name, dspaces, rank):
         self.dspaces = dspaces
         self.rank = rank
-        PopcornVariable.__init__(self, name, self.size(), rank, offset=(0,0))
+        dim= sum([d.size() for d in self.dspaces])
+        PopcornVariable.__init__(self, name, dim, rank, offset=(0,0))
 
     def size(self):
         if self.rank==0:
             return 1
         else:
             size = sum([d.size() for d in self.dspaces])
-            return size
-            # if self.rank==1:
-                # return size
-            # else:
-                # return size*size
+            #return size
+            if self.rank==1:
+                 return size
+            else:
+                return size*size
