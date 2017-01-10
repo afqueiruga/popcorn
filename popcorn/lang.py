@@ -49,15 +49,17 @@ class DebugPrint():
         self.var = var
     def emit(self):
         from itertools import product as PRI
-        lines = []
+        # lines = []
         if self.var.rank==0:
             lines += [ 'printf("{0}:\%lf",{0}[0]);'.format(self.var.name) ]
         elif self.var.rank==1:
             ix = "ix_{0}".format(self.var.name)
+            lines = []
             lines += ['printf("{0}: ");'.format(self.var.name)]
             bcode = 'printf("% 6.3lf",{0}[{1}]);'.format(self.var.name,ix)
-            lines += b.lang.loop_fmt.format(ix=ix,st=0,end=self.var.dim, body=bodycode)
-            lines += "\n" + 'printf("\\n");'
+            lines += [b.lang.loop_fmt.format(ix=ix,st=0,end=self.var.dim, body=bcode)]
+            lines += ["\n" + 'printf("\\n");']
+            lines = "\n".join(lines)
         else:
             ix = Symbol("ix_{0}".format(self.var.name))
             jx = Symbol("jx_{0}".format(self.var.name))
