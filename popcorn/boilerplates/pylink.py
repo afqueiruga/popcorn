@@ -119,6 +119,8 @@ set(KERNEL_FILES
 list(APPEND CMAKE_MODULE_PATH "$ENV{{CORNFLAKES_DIR}}/cmake")
 include(cornflakes)
 include_directories(${{CORNFLAKES_INCLUDES}})
+# Required: GSL
+find_package(gsl REQUIRED)
 find_package(SWIG REQUIRED)
 include(${{SWIG_USE_FILE}})
 set(CMAKE_SWIG_FLAGS "")
@@ -129,5 +131,5 @@ include_directories(${{KERNEL_INCLUDES}})
 swig_add_module(${{huskname}}_lib python ${{huskname}}_swig.i ${{KERNEL_FILES}})
 set_property(SOURCE ${{KERNEL_FILES}} APPEND_STRING PROPERTY COMPILE_FLAGS " -fPIC")
 
-swig_link_libraries(${{huskname}}_lib m ${{PYTHON_LIBRARIES}})
+swig_link_libraries(${{huskname}}_lib m ${{GSL_LIBRARIES}} ${{PYTHON_LIBRARIES}})
 """
