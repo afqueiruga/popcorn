@@ -120,7 +120,7 @@ list(APPEND CMAKE_MODULE_PATH "$ENV{{CORNFLAKES_DIR}}/cmake")
 include(cornflakes)
 include_directories(${{CORNFLAKES_INCLUDES}})
 # Required: GSL
-find_package(gsl REQUIRED)
+find_package(GSL REQUIRED)
 find_package(SWIG REQUIRED)
 include(${{SWIG_USE_FILE}})
 set(CMAKE_SWIG_FLAGS "")
