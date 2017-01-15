@@ -8,7 +8,7 @@ class DofSpace():
         self.v_stride = v_stride
         
     def size(self):
-        if self.v_start is int and self.v_start < 0:
+        if type(self.v_start) is int and self.v_start < 0:
             return (self.dim)
         else:
             return (self.dim*(self.v_end-self.v_start))
