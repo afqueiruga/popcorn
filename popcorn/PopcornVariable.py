@@ -59,15 +59,29 @@ class PopcornVariable(ImmutableDenseMatrix):
     
 
 
-class Input():
-    def __new__(cls, name, dspace):
-        PopcornVariable.__new__(cls, name, dspace.size(), 1, offset=0)
-        cls.dspace = dspace
+class Input(  ):
+    def __init__(self, name, dspace):
+        #PopcornVariable.__init__(self, name, dspace.size(), 1, offset=0)
+        self.dspace = dspace
+        self.name = name
+        self.rank = 1
+        self.dim = dspace.size()
+        self.offset = tuple([0 for i in xrange(1)])
+
+        self.lda = tuple([ self.dim**(1-i-1) for i in xrange(1)])
+
+    def __getitem__(self, index):
+        if not hasattr(index,"__iter__"):
+            index = (index,)
+        if len(index)>self.rank:
+            index = index[:self.rank]        
+        S=sum([s*(i+o) for s,i,o in zip(self.lda,index,self.offset)])
+        return Symbol("{0}[{1}]".format(self.name,ccode(sympify(S))))
     
-    #def __init__(self, name, dspace):
-    #    PopcornVariable.__init__(self, name, dspace.size(), 1, offset=0)
-    #    self.dspace = dspace
-        
+    def View(self,offset):
+        return PopcornVariable(self.name,self.dim,self.rank,
+                                   [a+b for a,b in zip(self.offset,offset)])
+    
     def Entry_Handle(self,i):
         return Symbol(self.name+"["+str(i)+"]")
     def Entry_Handles(self,*args):
@@ -95,12 +109,18 @@ class Input():
             raise Exception("Can't seperate entries for variable length inputs")
         
 
-class Output( PopcornVariable ):
+class Output(  ):
     def __init__(self, name, dspaces, rank):
         self.dspaces = dspaces
-        self.rank = rank
         dim= sum([d.size() for d in self.dspaces])
-        PopcornVariable.__init__(self, name, dim, rank, offset=(0,0))
+        
+        self.name = name
+        self.rank = rank
+        self.dim = dim
+        
+        self.offset = tuple([0 for i in xrange(rank)])
+        self.lda = tuple([ dim**(rank-i-1) for i in xrange(rank)])
+        #PopcornVariable.__init__(self, name, dim, rank, offset=(0,0))
 
     def size(self):
         if self.rank==0:
@@ -112,3 +132,15 @@ class Output( PopcornVariable ):
                  return size
             else:
                 return size*size
+    def __getitem__(self, index):
+        if not hasattr(index,"__iter__"):
+            index = (index,)
+        if len(index)>self.rank:
+            index = index[:self.rank]        
+        S=sum([s*(i+o) for s,i,o in zip(self.lda,index,self.offset)])
+        return Symbol("{0}[{1}]".format(self.name,ccode(sympify(S))))
+    
+    def View(self,offset):
+        return PopcornVariable(self.name,self.dim,self.rank,
+                                   [a+b for a,b in zip(self.offset,offset)])
+    
