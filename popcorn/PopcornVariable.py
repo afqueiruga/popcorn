@@ -1,21 +1,42 @@
 import boilerplates as b
 from util import *
-from sympy import ccode, Symbol, sympify
+from sympy import ccode, Symbol, sympify, ImmutableDenseMatrix
 
-class PopcornVariable():
-    def __init__(self, name, dim, rank,  offset=None ):
-        self.name = name
-        self.rank = rank
-        self.dim = dim
-        if offset == None:
-            self.offset = tuple([0 for i in xrange(rank)])
+class PopcornVariable(ImmutableDenseMatrix):
+    def __new__(cls,  name, dim, rank,  offset=None ):
+        if rank==1:
+            m= MyMat(name,dim,offset=0)
         else:
-            self.offset = offset
-        self.lda = tuple([ dim**(rank-i-1) for i in xrange(rank)])
+            m= MyMat(name, dim,dim,offset=0)
+    
+        C = super(PopcornVariable, cls).__new__(cls, m)
+        C.name = name
+        C.rank = rank
+        C.dim = dim
+        if offset == None:
+            C.offset = tuple([0 for i in xrange(rank)])
+        else:
+            C.offset = offset
+        C.lda = tuple([ dim**(rank-i-1) for i in xrange(rank)])
+        return C
+    #def __init__(self, name, dim, rank,  offset=None ):
+        
+    #    self.name = name
+    #    self.rank = rank
+    #    self.dim = dim
+    #    if offset == None:
+    #        self.offset = tuple([0 for i in xrange(rank)])
+    #    else:
+    #        self.offset = offset
+        #self.lda = tuple([ dim**(rank-i-1) for i in xrange(rank)])
+        #ImmutableDenseMatrix.__new__(self,self.as_matrix())
     def emit(self):
         return "real_t {0}[{1}];{{int i; for(i= 0;i<{1};i++) {0}[i]=0.0;}}".format(self.name,self.dim**self.rank)
     def __getitem__(self, index):
-        
+        try:
+            super(PopcornVariable, self).__getitem__(self, index)
+        except IndexError:
+            pass
         if not hasattr(index,"__iter__"):
             index = (index,)
         if len(index)>self.rank:
@@ -38,11 +59,15 @@ class PopcornVariable():
     
 
 
-class Input( PopcornVariable ):
-    def __init__(self, name, dspace):
-        PopcornVariable.__init__(self, name, dspace.size(), 1, offset=0)
-        self.dspace = dspace
+class Input():
+    def __new__(cls, name, dspace):
+        PopcornVariable.__new__(cls, name, dspace.size(), 1, offset=0)
+        cls.dspace = dspace
     
+    #def __init__(self, name, dspace):
+    #    PopcornVariable.__init__(self, name, dspace.size(), 1, offset=0)
+    #    self.dspace = dspace
+        
     def Entry_Handle(self,i):
         return Symbol(self.name+"["+str(i)+"]")
     def Entry_Handles(self,*args):
