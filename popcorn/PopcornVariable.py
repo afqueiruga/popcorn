@@ -4,12 +4,17 @@ from sympy import ccode, Symbol, sympify, ImmutableDenseMatrix
 
 class PopcornVariable(ImmutableDenseMatrix):
     def __new__(cls,  name, dim, rank,  offset=None ):
-        if rank==1:
-            m= MyMat(name,dim,offset=0)
-        else:
-            m= MyMat(name, dim,dim,offset=0)
+        try:
+            if rank==1:
+                m= MyMat(name,dim,offset=0)
+            else:
+                m= MyMat(name, dim,dim,offset=0)
     
-        C = super(PopcornVariable, cls).__new__(cls, m)
+            C = super(PopcornVariable, cls).__new__(cls, m)
+        except:
+            # Can't do the MatrixRepresentation...
+            C = object.__new__(cls)
+            C.bad = True
         C.name = name
         C.rank = rank
         C.dim = dim
@@ -32,10 +37,11 @@ class PopcornVariable(ImmutableDenseMatrix):
         #ImmutableDenseMatrix.__new__(self,self.as_matrix())
     def emit(self):
         return "real_t {0}[{1}];{{int i; for(i= 0;i<{1};i++) {0}[i]=0.0;}}".format(self.name,self.dim**self.rank)
+    
     def __getitem__(self, index):
         try:
-            super(PopcornVariable, self).__getitem__(self, index)
-        except IndexError:
+            return super(PopcornVariable, self).__getitem__( index)
+        except: # IndexError, AttributeError:
             pass
         if not hasattr(index,"__iter__"):
             index = (index,)
