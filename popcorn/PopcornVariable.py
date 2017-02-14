@@ -5,7 +5,9 @@ from sympy import ccode, Symbol, sympify, ImmutableDenseMatrix
 class PopcornVariable(ImmutableDenseMatrix):
     def __new__(cls,  name, dim, rank,  offset=None ):
         try:
-            if rank==1:
+            if rank==0:
+                m= MyMat(name, 1, offset=0)
+            elif rank==1:
                 m= MyMat(name,dim,offset=0)
             else:
                 m= MyMat(name, dim,dim,offset=0)
@@ -36,9 +38,16 @@ class PopcornVariable(ImmutableDenseMatrix):
         #self.lda = tuple([ dim**(rank-i-1) for i in xrange(rank)])
         #ImmutableDenseMatrix.__new__(self,self.as_matrix())
     def emit(self):
+        """
+        Print out the allocation and initialization to 0.
+        """
         return "real_t {0}[{1}];{{int i; for(i= 0;i<{1};i++) {0}[i]=0.0;}}".format(self.name,self.dim**self.rank)
     
     def __getitem__(self, index):
+        """
+        Extra logic to handle the case where index is not an int, or 
+        the variable has an indefinite length.
+        """
         try:
             return super(PopcornVariable, self).__getitem__( index)
         except: # IndexError, AttributeError:
@@ -51,6 +60,13 @@ class PopcornVariable(ImmutableDenseMatrix):
         S=sum([s*(i+o) for s,i,o in zip(self.lda,index,self.offset)])
         
         return Symbol("{0}[{1}]".format(self.name,ccode(sympify(S))))
+
+    def func(self, *args):
+        """
+        These should never be interpretted as expressions, only roots.
+        """
+        return ImmutableDenseMatrix(*args)
+    
     def View(self,offset):
         return PopcornVariable(self.name,self.dim,self.rank,
                                    [a+b for a,b in zip(self.offset,offset)])
