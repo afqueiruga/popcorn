@@ -8,3 +8,5 @@ from Kernel import Kernel
 from husker import Husk
 # User propbably wants this
 from sympy import *
+
+import functional
