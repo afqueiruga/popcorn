@@ -3,7 +3,7 @@ from subprocess import call
 
 def Husk(libname,kernels,installdir=".",config=BP.config_linux):
     targetdir = installdir + "/husk_" + libname + "/"
-    call(['mkdir',targetdir])
+    call(['mkdir','-p',targetdir])
     
     # Tell the kernels to write themselves
     for k in kernels:
