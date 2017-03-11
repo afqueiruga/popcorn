@@ -3,6 +3,7 @@ Generic tools for functional implementation
 
 """
 from PopcornVariable import PopcornVariable
+from sympy import Matrix
 
 class Field( PopcornVariable):
     def __new__(cls, name, gdim, rank):
@@ -22,11 +23,11 @@ class Field( PopcornVariable):
         if self.pv_grad_u is None:
             self.pv_grad_u = PopcornVariable('grad_'+ self.name, self.dim, self.rank+1)
         return self.pv_grad_u #.as_matrix()
-    def emit(self):
-        return "\n".join([
-            super(Field,self).emit(),
-            ( self.pv_grad_u.emit() if self.pv_grad_u is not None else "" )
-            ])
+    #def emit(self):
+    #    return "\n".join([
+    #        super(Field,self).emit(),
+    #        ( self.pv_grad_u.emit() if self.pv_grad_u is not None else "" )
+    #        ])
     
 def extract(P, u, grad_u,   NJ, grad_NJ,
                tu, grad_tu, NI, grad_NI):
@@ -44,6 +45,25 @@ def extract(P, u, grad_u,   NJ, grad_NJ,
 
     return RI, KIJ
 
+def gateaux(f, u, N, dNdx): # NOTE
+    R = [ Matrix([f]).diff(ui) * NA + Matrix([f]).jacobian(grad(u)[:,i]) * dNdx[:,A]
+              for A,NA in enumerate(N)
+              for i,ui in enumerate(u) ]
+    # print len(R)
+    return Matrix(R)
+
+#
+# Helper for subs on matrices
+#
+component_sub = lambda F,V : { a:b for a,b in zip(F,V) }
+def dict_cat(*args):
+    d = {}
+    for a in args: d.update(a)
+    return d
+def field_keys( *args ):
+    return dict_cat(*[
+        component_sub(f,e) for f,e in args
+        ])
 
 #
 # Additional tensor expressions

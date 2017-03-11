@@ -12,12 +12,15 @@ class Diff_Symbol(Symbol):
 
 def MyMat(name, m,n=0,offset=0, SYMTYPE=Symbol):
     # n=Symbol(name)
+    if not hasattr(offset,"__getitem__"):
+        offset=(offset,)
+    
     if n==0:
-        return Matrix([SYMTYPE(name+"["+str(offset+i)+"]", real=True) for i in xrange(m)])
+        return Matrix([SYMTYPE(name+"["+str(offset[0]+i)+"]", real=True) for i in xrange(m)])
     else:
         #return #Matrix([[SYMTYPE(name+"["+self.m+"*("+str(offset+i)+"+""+str(j)+"]") for j in xrange(n)] for i in xrange(m)])
         return Matrix([[
-            SYMTYPE(name+"["+str(offset+n*i+j)+"]",real=True)
+            SYMTYPE(name+"["+str(offset[j]+n*i+j)+"]",real=True)
             for j in xrange(n) ] for i in xrange(m)])
 
 

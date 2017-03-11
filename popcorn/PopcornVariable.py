@@ -4,26 +4,27 @@ from sympy import ccode, Symbol, sympify, ImmutableDenseMatrix
 
 class PopcornVariable(ImmutableDenseMatrix):
     def __new__(cls,  name, dim, rank,  offset=None ):
+        if offset == None:
+            offset = tuple([0 for i in xrange(rank if rank>0 else 1)])
+        if not hasattr(offset,"__getitem__"):
+            offset=(offset,)
         try:
             if rank==0:
-                m= MyMat(name, 1, offset=0)
+                m= MyMat(name, 1, offset=offset[0])
             elif rank==1:
-                m= MyMat(name,dim,offset=0)
+                m= MyMat(name,dim,offset=offset[0])
             else:
-                m= MyMat(name, dim,dim,offset=0)
+                m= MyMat(name, dim,dim,offset=offset)
     
             C = super(PopcornVariable, cls).__new__(cls, m)
         except:
-            # Can't do the MatrixRepresentation...
+        # Can't do the MatrixRepresentation...
             C = object.__new__(cls)
             C.bad = True
         C.name = name
         C.rank = rank
         C.dim = dim
-        if offset == None:
-            C.offset = tuple([0 for i in xrange(rank)])
-        else:
-            C.offset = offset
+        C.offset = offset
         C.lda = tuple([ dim**(rank-i-1) for i in xrange(rank)])
         return C
     #def __init__(self, name, dim, rank,  offset=None ):
@@ -60,7 +61,11 @@ class PopcornVariable(ImmutableDenseMatrix):
         S=sum([s*(i+o) for s,i,o in zip(self.lda,index,self.offset)])
         
         return Symbol("{0}[{1}]".format(self.name,ccode(sympify(S))))
-
+    def __iter__(self):
+        if type(self.dim) is int:
+            return iter(self.as_matrix())
+        else:
+            return None
     def func(self, *args):
         """
         These should never be interpretted as expressions, only roots.
@@ -73,11 +78,11 @@ class PopcornVariable(ImmutableDenseMatrix):
 
     def as_matrix(self):
         if self.rank==0:
-            return Symbol(self.name+"[{0}]".format(0))
+            return Symbol(self.name+"[{0}]".format(self.offset[0]))
         elif self.rank==1:
-            return MyMat(self.name,self.dim,offset=0)
+            return MyMat(self.name,self.dim,offset=self.offset)
         else:
-            return MyMat(self.name, self.dim,self.dim,offset=0)
+            return MyMat(self.name, self.dim,self.dim,offset=self.offset )
     
 
 
