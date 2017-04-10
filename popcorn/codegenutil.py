@@ -12,3 +12,12 @@ def assignment(expr,asgn, op="="):
     else:
         lines += []
     return "\n".join(lines)
+
+
+def emit(l):
+    try:
+        return l.emit()
+    except AttributeError as err:
+        print "Error with object", l, err
+        #l.emit()
+        return l

@@ -55,13 +55,6 @@ class Kernel():
         code_arg = g.arguments.format(inplines,outplines)
 
         # Outputs
-        def emit(l):
-            try:
-                return l.emit()
-            except AttributeError:
-                print l
-                #l.emit()
-                return l
         code_body = "\n\n".join([ emit(l) for l in self.listing ])
         
 

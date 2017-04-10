@@ -37,7 +37,7 @@ class Loop():
         self.body = body
 
     def emit(self):
-        bodycode = "\n".join([ l.emit() for l in self.body ])
+        bodycode = "\n".join([ emit(l) for l in self.body ])
         
         return b.lang.loop_fmt.format(ix=self.index,
                                       st=int_sanitize(self.start),
