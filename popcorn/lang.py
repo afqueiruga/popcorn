@@ -63,7 +63,7 @@ class DebugPrint():
         else:
             ix = Symbol("ix_{0}".format(self.var.name))
             jx = Symbol("jx_{0}".format(self.var.name))
-            innercode = 'printf("% 6.3lf ",{0});'.format(self.var[ix,jx])
+            innercode = 'printf("% 6.3lf ",{0});'.format(self.var[jx,ix])
             innerloop = b.lang.loop_fmt.format(ix=ix,st=0,end=self.var.dim, body=innercode)
             outercode = "\n".join([ innerloop ] + [ 'printf("\\n");' ])
             lines = b.lang.loop_fmt.format(ix=jx,st=0,end=self.var.dim, body=outercode) + '\nprintf("\\n");'
