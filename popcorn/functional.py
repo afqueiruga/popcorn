@@ -3,7 +3,7 @@ Generic tools for functional implementation
 
 """
 from PopcornVariable import PopcornVariable
-from sympy import Matrix
+from sympy import Matrix, eye
 
 class Field( PopcornVariable):
     def __new__(cls, name, gdim, rank):
@@ -46,10 +46,12 @@ def extract(P, u, grad_u,   NJ, grad_NJ,
     return RI, KIJ
 
 def gateaux(f, u, N, dNdx): # NOTE
-    R = [ Matrix([f]).diff(ui) * NA + Matrix([f]).jacobian(grad(u)[:,i]) * dNdx[:,A]
+    # from IPython import embed ; embed()
+    R = [ Matrix([f]).diff(ui) * NA + Matrix([f]).jacobian(grad(u)[i,:]) * dNdx[:,A]
               for A,NA in enumerate(N)
               for i,ui in enumerate(u) ]
     # print len(R)
+    # TODO: Reshape this guy
     return Matrix(R)
 
 #
