@@ -60,7 +60,7 @@ class PopcornVariable(ImmutableDenseMatrix):
         
         S=sum([s*(i+o) for s,i,o in zip(self.lda,index,self.offset)])
         
-        return Symbol("{0}[{1}]".format(self.name,ccode(sympify(S))))
+        return Symbol("{0}[{1}]".format(self.name,ccode(sympify(S))),real=True)
     def __iter__(self):
         if type(self.dim) is int:
             return iter(self.as_matrix())
@@ -78,7 +78,7 @@ class PopcornVariable(ImmutableDenseMatrix):
 
     def as_matrix(self):
         if self.rank==0:
-            return Symbol(self.name+"[{0}]".format(self.offset[0]))
+            return Symbol(self.name+"[{0}]".format(self.offset[0]),real=True)
         elif self.rank==1:
             return MyMat(self.name,self.dim,offset=self.offset)
         else:
