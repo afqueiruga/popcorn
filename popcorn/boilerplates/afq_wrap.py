@@ -31,7 +31,7 @@ strct_kernel_outps = """\
 .outp = {{
 {1}
 }},"""
-strct_outp_t = '{{ .rank = {0}, .nmap = {1}, .map_nums = {{ {2} }} }}'
+strct_outp_t = '{{ .rank = {0}, .nmap = {1}, .map_nums = {{ {2} }}, .name="{3}" }}'
 
 
 eval_wr = """\

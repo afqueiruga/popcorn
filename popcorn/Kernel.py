@@ -99,7 +99,8 @@ class Kernel():
         code_inp = aw.strct_kernel_inps.format( len(self.inputs), ",\n".join(list_inps) )
 
         list_outps = [ aw.strct_outp_t.format(op.rank, len(op.dspaces),
-                                             ",".join([str(self.spaces[d]) for d in op.dspaces]) )
+                                              ",".join([str(self.spaces[d]) for d in op.dspaces]),
+                                              op.name)
                        for i,op in enumerate(self.outputs) ]
         code_outp = aw.strct_kernel_outps.format(len(self.outputs),",\n".join(list_outps) )
         
