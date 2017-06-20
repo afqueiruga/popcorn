@@ -9,16 +9,16 @@ class Asgn():
         self.expr = expr
         self.op = op
     def emit(self):
+        # TODO: Sanitize transposing of row/columns
         from itertools import product as PRI
         lines = ["/* Evaluation of {0} */".format(self.asgn.name) ]
         try:
             it =  PRI(*[xrange(j) for j in self.expr.shape])
         except:
             it = xrange(len(self.expr))
-            # print it
         for i in it:
-            # print i
             lines += [ ccode( self.expr[i],self.asgn[i] ).replace(" =",self.op) ]
+        #lines += [ ccode( a, b).replace(" =",self.op) for a,b in zip( self.asgn, self.expr ) ]
         return "\n".join(lines)
 
 class IfElse():
@@ -49,13 +49,14 @@ class DebugPrint():
         self.var = var
     def emit(self):
         from itertools import product as PRI
-        # lines = []
+        lines = ['printf("{0}: ");'.format(self.var.name)]
         if self.var.rank==0:
             lines += [ 'printf("{0}:\%lf",{0}[0]);'.format(self.var.name) ]
+            lines = "\n".join(lines)
         elif self.var.rank==1:
             ix = "ix_{0}".format(self.var.name)
-            lines = []
-            lines += ['printf("{0}: ");'.format(self.var.name)]
+            # lines = []
+            # lines += []
             bcode = 'printf("% 6.3lf",{0}[{1}]);'.format(self.var.name,ix)
             lines += [b.lang.loop_fmt.format(ix=ix,st=0,end=self.var.dim, body=bcode)]
             lines += ["\n" + 'printf("\\n");']
@@ -66,5 +67,6 @@ class DebugPrint():
             innercode = 'printf("% 6.3lf ",{0});'.format(self.var[jx,ix])
             innerloop = b.lang.loop_fmt.format(ix=ix,st=0,end=self.var.dim, body=innercode)
             outercode = "\n".join([ innerloop ] + [ 'printf("\\n");' ])
-            lines = b.lang.loop_fmt.format(ix=jx,st=0,end=self.var.dim, body=outercode) + '\nprintf("\\n");'
+            lines = lines[0] + b.lang.loop_fmt.format(ix=jx,st=0,end=self.var.dim, body=outercode) + '\nprintf("\\n");'
+        
         return lines
