@@ -2,12 +2,22 @@ from util import *
 from codegenutil import *
 import boilerplates as b
 
+def freesym(x):
+    try:
+        return x.free_symbols
+    except:
+        try:
+            return [ freesym(y) for y in x ]
+        except:
+            return set()
 
 class Asgn():
     def __init__(self,asgn, expr, op="="):
         self.asgn = asgn
         self.expr = expr
         self.op = op
+        self.free_symbols = self.asgn.free_symbols | self.expr.free_symbols
+        
     def emit(self):
         # TODO: Sanitize transposing of row/columns
         from itertools import product as PRI
@@ -26,6 +36,8 @@ class IfElse():
         self.cond = cond
         self.ifb = ifb
         self.elb = elb
+        self.free_symbols = cond.free_symbols | freesym(ifb) | freesym(efb)
+        
     def emit(self):
         return b.lang.if_fmt.format( ccode(self.cond), self.ifb.emit(), self.elb.emit() if self.elb else "" )
 
@@ -35,7 +47,8 @@ class Loop():
         self.start = start
         self.end = end
         self.body = body
-
+        self.free_symbols = freesym( self.body )
+        
     def emit(self):
         bodycode = "\n".join([ emit(l) for l in self.body ])
         
@@ -47,6 +60,8 @@ class Loop():
 class DebugPrint():
     def __init__(self, var):
         self.var = var
+        self.free_symbols = var.free_symbols
+        
     def emit(self):
         from itertools import product as PRI
         lines = ['printf("{0}: ");'.format(self.var.name)]

@@ -15,12 +15,14 @@ class PopcornVariable(ImmutableDenseMatrix):
                 m= MyMat(name,dim,offset=offset[0])
             else:
                 m= MyMat(name, dim,dim,offset=offset)
-    
+            
             C = super(PopcornVariable, cls).__new__(cls, m)
-        except:
+        except Exception as e:
+        #    print e
         # Can't do the MatrixRepresentation...
-            C = object.__new__(cls)
+            C = super(PopcornVariable, cls).__new__(cls, MyMat(name,1,offset=offset[0]))
             C.bad = True
+            #C.free_symbols = set([Symbol(name+"[")])
         C.name = name
         C.rank = rank
         C.dim = dim
