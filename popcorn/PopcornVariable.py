@@ -2,6 +2,8 @@ import boilerplates as b
 from util import *
 from sympy import ccode, Symbol, sympify, ImmutableDenseMatrix
 
+import popcorn_globals
+
 class PopcornVariable(ImmutableDenseMatrix):
     def __new__(cls,  name, dim, rank,  offset=None ):
         if offset == None:
@@ -92,6 +94,7 @@ class Input( PopcornVariable ):
     def __new__(cls, name, dspace ):
         C = super(Input,cls).__new__(cls, name, dspace.size(), 1, offset=0)
         C.dspace = dspace
+        popcorn_globals.registered_inputs.add(C)
         return C
     #def __init__(self, name, dspace):
         #PopcornVariable.__init__(self, name, dspace.size(), 1, offset=0)
@@ -146,6 +149,7 @@ class Output( PopcornVariable ):
         dim = sum([d.size() for d in dspaces])
         C = super(Output, cls).__new__(cls, name,dim, rank,offset=(0,0))
         C.dspaces = dspaces
+        popcorn_globals.registered_outputs.add(C)
         return C
     def size(self):
         if self.rank==0:
