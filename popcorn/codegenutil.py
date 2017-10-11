@@ -18,6 +18,6 @@ def emit(l):
     try:
         return l.emit()
     except AttributeError as err:
-        print "Error with object", l, err
+        print "Object with no emit:", l, err
         #l.emit()
         return l

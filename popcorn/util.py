@@ -20,7 +20,7 @@ def MyMat(name, m,n=0,offset=0, SYMTYPE=Symbol):
     else:
         #return #Matrix([[SYMTYPE(name+"["+self.m+"*("+str(offset+i)+"+""+str(j)+"]") for j in xrange(n)] for i in xrange(m)])
         return Matrix([[
-            SYMTYPE(name+"["+str(n*(offset[1]*i)+j+offset[0])+"]",real=True)
+            SYMTYPE(name+"["+str(n*(offset[1]+i)+j+offset[0])+"]",real=True)
             for j in xrange(n) ] for i in xrange(m)])
 
 
