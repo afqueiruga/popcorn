@@ -7,7 +7,7 @@ def freesym(x):
         return x.free_symbols
     except:
         try:
-            return [ freesym(y) for y in x ]
+            return set.union(*[ freesym(y) for y in x ])
         except:
             return set()
 

@@ -2,6 +2,9 @@ from boilerplates import general as g
 from boilerplates import afq_wrap as aw
 from codegenutil import *
 from util import *
+import lang
+import popcorn_globals
+
 from sympy import ccode
 
 from collections import OrderedDict
@@ -10,9 +13,19 @@ from oset import oset
 class Kernel():
     def __init__(self, name, inputs, outputs, listing=[]):
         self.name = name
-        self.inputs = inputs
-        self.outputs = outputs
         self.listing = listing
+        self.free_symbols = lang.freesym(self.listing)
+        names = set([ x.name[:x.name.find('[')] for x in self.free_symbols ])
+        self.inputs= [ x for x in popcorn_globals.registered_inputs
+                      if x.name in names ]
+        self.outputs= [ x for x in popcorn_globals.registered_outputs
+                      if x.name in names ]
+        # This doesn't work. We need to do something a little different
+        # We need to make it index agnostic
+        #self.inputs = [ x for x in popcorn_globals.registered_inputs
+        #                if not x.free_symbols.isdisjoint( self.free_symbols ) ] 
+        #self.outputs = [ x for x in popcorn_globals.registered_outputs
+        #                if not x.free_symbols.isdisjoint( self.free_symbols ) ]
         # Make a list of all of the DOfSpaces and then order them
         S = oset()
         for i in inputs:

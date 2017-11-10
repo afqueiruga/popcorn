@@ -118,7 +118,7 @@ class Input( PopcornVariable ):
     #                               [a+b for a,b in zip(self.offset,offset)])
     
     def Entry_Handle(self,i):
-        return Symbol(self.name+"["+str(i)+"]")
+        return self[i] #Symbol(self.name+"["+str(i)+"]")
     def Entry_Handles(self,*args):
         return [ self.Entry_Handle(i) for i in args ]
     
