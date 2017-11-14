@@ -20,28 +20,16 @@ class PopcornVariable(ImmutableDenseMatrix):
             
             C = super(PopcornVariable, cls).__new__(cls, m)
         except Exception as e:
-        #    print e
-        # Can't do the MatrixRepresentation...
+            # Can't do the MatrixRepresentation...
             C = super(PopcornVariable, cls).__new__(cls, MyMat(name,1,offset=offset[0]))
             C.bad = True
-            #C.free_symbols = set([Symbol(name+"[")])
         C.name = name
         C.rank = rank
         C.dim = dim
         C.offset = offset
         C.lda = tuple([ dim**(rank-i-1) for i in xrange(rank)])
         return C
-    #def __init__(self, name, dim, rank,  offset=None ):
-        
-    #    self.name = name
-    #    self.rank = rank
-    #    self.dim = dim
-    #    if offset == None:
-    #        self.offset = tuple([0 for i in xrange(rank)])
-    #    else:
-    #        self.offset = offset
-        #self.lda = tuple([ dim**(rank-i-1) for i in xrange(rank)])
-        #ImmutableDenseMatrix.__new__(self,self.as_matrix())
+
     def emit(self):
         """
         Print out the allocation and initialization to 0.
@@ -96,29 +84,9 @@ class Input( PopcornVariable ):
         C.dspace = dspace
         popcorn_globals.registered_inputs.add(C)
         return C
-    #def __init__(self, name, dspace):
-        #PopcornVariable.__init__(self, name, dspace.size(), 1, offset=0)
-    #    self.dspace = dspace
-    #    self.name = name
-    #    self.rank = 1
-    #    self.dim = dspace.size()
-    #    self.offset = tuple([0 for i in xrange(1)])
-    #    self.lda = tuple([ self.dim**(1-i-1) for i in xrange(1)])
-
-    #def __getitem__(self, index):
-    #    if not hasattr(index,"__iter__"):
-    #        index = (index,)
-    #    if len(index)>self.rank:
-    #        index = index[:self.rank]        
-    #    S=sum([s*(i+o) for s,i,o in zip(self.lda,index,self.offset)])
-    #    return Symbol("{0}[{1}]".format(self.name,ccode(sympify(S))))
-    
-    #def View(self,offset):
-    #    return PopcornVariable(self.name,self.dim,self.rank,
-    #                               [a+b for a,b in zip(self.offset,offset)])
     
     def Entry_Handle(self,i):
-        return self[i] #Symbol(self.name+"["+str(i)+"]")
+        return self[i]
     def Entry_Handles(self,*args):
         return [ self.Entry_Handle(i) for i in args ]
     
@@ -156,32 +124,7 @@ class Output( PopcornVariable ):
             return 1
         else:
             size = sum([d.size() for d in self.dspaces])
-            #return size
             if self.rank==1:
                  return size
             else:
                 return size*size
-    #def __init__(self, name, dspaces, rank):
-    #    self.dspaces = dspaces
-    #    dim= sum([d.size() for d in self.dspaces])
-        
-    #    self.name = name
-    #    self.rank = rank
-    #    self.dim = dim
-        
-    #    self.offset = tuple([0 for i in xrange(rank)])
-    #    self.lda = tuple([ dim**(rank-i-1) for i in xrange(rank)])
-        #PopcornVariable.__init__(self, name, dim, rank, offset=(0,0))
-
-    #def __getitem__(self, index):
-    #    if not hasattr(index,"__iter__"):
-    #        index = (index,)
-    #    if len(index)>self.rank:
-    #        index = index[:self.rank]        
-    #    S=sum([s*(i+o) for s,i,o in zip(self.lda,index,self.offset)])
-    #    return Symbol("{0}[{1}]".format(self.name,ccode(sympify(S))))
-    
-    #def View(self,offset):
-    #    return PopcornVariable(self.name,self.dim,self.rank,
-    #                               [a+b for a,b in zip(self.offset,offset)])
-    
