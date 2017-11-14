@@ -36,10 +36,14 @@ class IfElse():
         self.cond = cond
         self.ifb = ifb
         self.elb = elb
-        self.free_symbols = cond.free_symbols | freesym(ifb) | freesym(efb)
+        self.free_symbols = cond.free_symbols | freesym(ifb)
+        if elb is not None:
+            self.free_symbols = self.free_symbols | freesym(elb)
         
     def emit(self):
-        return b.lang.if_fmt.format( ccode(self.cond), self.ifb.emit(), self.elb.emit() if self.elb else "" )
+        return b.lang.if_fmt.format( ccode(self.cond),
+                                     emit(self.ifb),
+                                     emit(self.elb) if self.elb else "" )
 
 class Loop():
     def __init__(self,index,start,end, body):
