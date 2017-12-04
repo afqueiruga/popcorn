@@ -11,7 +11,7 @@ from collections import OrderedDict
 from oset import oset
 
 class Kernel():
-    def __init__(self, name, inputs, outputs, listing=[]):
+    def __init__(self, name, inputs=None, outputs=None, listing=[]):
         self.name = name
         self.listing = listing
         self.free_symbols = lang.freesym(self.listing)
@@ -20,17 +20,12 @@ class Kernel():
                       if x.name in names ]
         self.outputs= [ x for x in popcorn_globals.registered_outputs
                       if x.name in names ]
-        # This doesn't work. We need to do something a little different
-        # We need to make it index agnostic
-        #self.inputs = [ x for x in popcorn_globals.registered_inputs
-        #                if not x.free_symbols.isdisjoint( self.free_symbols ) ] 
-        #self.outputs = [ x for x in popcorn_globals.registered_outputs
-        #                if not x.free_symbols.isdisjoint( self.free_symbols ) ]
+
         # Make a list of all of the DOfSpaces and then order them
         S = oset()
-        for i in inputs:
+        for i in self.inputs:
             S.add( i.dspace )
-        for o in outputs:
+        for o in self.outputs:
             for d in o.dspaces:
                 S.add(d)
         dic = OrderedDict()
@@ -38,6 +33,7 @@ class Kernel():
             dic[d]=i
         self.spaces = dic
 
+        popcorn_globals.registered_kernels.add(self)
 
     def Write_Module(self, fname=None, wrap_type = "afq"):
         eval_code = self.Write_Eval()

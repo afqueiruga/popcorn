@@ -1,10 +1,12 @@
 from boilerplates import pylink as BP
 from subprocess import call
+import popcorn_globals
 
-def Husk(libname,kernels,installdir=".",config=BP.config_linux):
+def Husk(libname,kernels=None,installdir=".",config=BP.config_linux):
     targetdir = installdir + "/husk_" + libname + "/"
     call(['mkdir','-p',targetdir])
-    
+
+    kernels = list(popcorn_globals.registered_kernels)
     # Tell the kernels to write themselves
     for k in kernels:
         k.Write_Module(targetdir)
