@@ -16,11 +16,12 @@ class Kernel():
         self.listing = listing
         self.free_symbols = lang.freesym(self.listing)
         names = set([ x.name[:x.name.find('[')] for x in self.free_symbols ])
-        self.inputs= [ x for x in popcorn_globals.registered_inputs
-                      if x.name in names ]
-        self.outputs= [ x for x in popcorn_globals.registered_outputs
-                      if x.name in names ]
-
+        # self.inputs= [ x for x in popcorn_globals.registered_inputs
+        #               if x.name in names ]
+        # self.outputs= [ x for x in popcorn_globals.registered_outputs
+        #               if x.name in names ]
+        self.inputs = [ popcorn_globals.registered_inputs[n] for n in names if n in popcorn_globals.registered_inputs ]
+        self.outputs = [ popcorn_globals.registered_outputs[n] for n in names if n in popcorn_globals.registered_outputs ]
         # Make a list of all of the DOfSpaces and then order them
         S = oset()
         for i in self.inputs:
@@ -34,6 +35,7 @@ class Kernel():
         self.spaces = dic
 
         popcorn_globals.registered_kernels.add(self)
+        # popcorn_globals.registered_kernels[self.name] = self
 
     def Write_Module(self, fname=None, wrap_type = "afq"):
         eval_code = self.Write_Eval()

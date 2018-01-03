@@ -82,7 +82,8 @@ class Input( PopcornVariable ):
     def __new__(cls, name, dspace ):
         C = super(Input,cls).__new__(cls, name, dspace.size(), 1, offset=0)
         C.dspace = dspace
-        popcorn_globals.registered_inputs.add(C)
+        # popcorn_globals.registered_inputs.add(C)
+        popcorn_globals.registered_inputs[name] = C
         return C
     
     def Entry_Handle(self,i):
@@ -117,7 +118,8 @@ class Output( PopcornVariable ):
         dim = sum([d.size() for d in dspaces])
         C = super(Output, cls).__new__(cls, name,dim, rank,offset=(0,0))
         C.dspaces = dspaces
-        popcorn_globals.registered_outputs.add(C)
+        # popcorn_globals.registered_outputs.add(C)
+        popcorn_globals.registered_outputs[name] = C
         return C
     def size(self):
         if self.rank==0:

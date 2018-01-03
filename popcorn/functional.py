@@ -10,7 +10,8 @@ class Field( PopcornVariable):
     def __new__(cls, name, gdim, rank):
         C = super(Field,cls).__new__(cls, 'field_'+name, gdim,rank)
         C.pv_grad_u = None
-        popcorn_globals.registered_fields.add(C)
+        # popcorn_globals.registered_fields.add(C)
+        popcorn_globals.registered_fields[C.name] = C
         return C
     def grad(self):
         if self.pv_grad_u is None:
