@@ -63,12 +63,51 @@ config_osx = {
 wrapper = """
 %module {libname}_lib
 %{{
+#define SWIG_FILE_WITH_INIT
 {0}
 %}}
+
+%include "kernel.h"
+//%include "numpy.i"
+//%init %{{
+//  import_array();
+//%}}
+
 {1}
+/* Wrappers to call them */
+%inline %{{
+
+%}}
 """
+
+crap = \
+"""
+int kernel_outp_len(kernel_t * ke, outp_t * ou, int l_edge) {{
+  int i, len=0;
+  if(ou->rank==0) return 1;
+  for(i=0;i<ou->nmap;i++) {{
+    len += kernel_map_len(ke->maps[ ou->map_nums[i] ], l_edge);
+  }}
+  if(ou->rank==1)
+    return len;
+  else
+    return len*len;
+}}
+
+int kernel_outps_len(kernel_t * ke, int l_edge) {{
+  int i,j, len=0;
+  for(i=0;i<ke->noutp;i++) {{
+    len += kernel_outp_len(ke, ke->outp+i, l_edge);
+  }}
+  return len;
+}}
+
+"""
+
 swig_include='#include "{0}.h"'
 swig_swigi = '%include "{0}.h"'
+
+
 
 bigheader = """
 #ifndef __KERNELS_{libname}_H
@@ -131,5 +170,11 @@ include_directories(${{KERNEL_INCLUDES}})
 swig_add_module(${{huskname}}_lib python ${{huskname}}_swig.i ${{KERNEL_FILES}})
 set_property(SOURCE ${{KERNEL_FILES}} APPEND_STRING PROPERTY COMPILE_FLAGS " -fPIC")
 
-swig_link_libraries(${{huskname}}_lib m ${{GSL_LIBRARIES}} ${{PYTHON_LIBRARIES}})
+if(${{CMAKE_SYSTEM_NAME}} MATCHES "Darwin")
+  set(link_to_cornflakes_for_swig lib_cornflakes)
+else()
+  set(link_to_cornflakes_for_swig swig_cornflakes)
+endif()
+
+swig_link_libraries(${{huskname}}_lib m ${{GSL_LIBRARIES}} ${{PYTHON_LIBRARIES}}  ${{link_to_cornflakes_for_swig}} ${{CORNFLAKES_LIBRARIES}})
 """
