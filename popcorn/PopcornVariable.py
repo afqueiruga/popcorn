@@ -70,7 +70,8 @@ class PopcornVariable(ImmutableDenseMatrix):
 
     def as_matrix(self):
         if self.rank==0:
-            return Symbol(self.name+"[{0}]".format(self.offset[0]),real=True)
+            # return Symbol(self.name+"[{0}]".format(self.offset[0]),real=True)
+            return MyMat(self.name,1,offset=self.offset[0])
         elif self.rank==1:
             return MyMat(self.name,self.dim,offset=self.offset)
         else:
