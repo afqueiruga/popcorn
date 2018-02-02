@@ -20,7 +20,7 @@ def Husk(libname,kernels=None,installdir=".",config=BP.config_linux):
     # mf.write(BP.makefile.format(**d))
     # mf.close()
 
-    sf = open(targetdir+libname+"_swig.i","w")    
+    sf = open(targetdir+libname+"_swig.i","w")
     sf.write(BP.wrapper.format(
         "\n".join([BP.swig_include.format(n) for n in kernelnames]),
         "\n".join([BP.swig_swigi.format(n)   for n in kernelnames]),
