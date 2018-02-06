@@ -124,11 +124,11 @@ import os
 p = os.path.dirname(os.path.abspath(__file__))
 call(['make'], cwd=p)
 try:
-    import {libname}_lib
+    from . import {libname}_lib
 except ImportError:
     call(['cmake',p], cwd=p)
     call(['make'],  cwd=p)
-    import {libname}_lib
+    from . import {libname}_lib
 {0}
 """
 importline = "kernel_{0} = {libname}_lib.cvar.kernel_{0}"
