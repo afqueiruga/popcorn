@@ -126,6 +126,8 @@ call(['make'], cwd=p)
 try:
     from . import {libname}_lib
 except ImportError:
+    call(['rm','-r','CMakeFiles'], cwd=p)
+    call(['rm','CMakeCache.txt'], cwd=p)
     call(['cmake',p], cwd=p)
     call(['make'],  cwd=p)
     from . import {libname}_lib
