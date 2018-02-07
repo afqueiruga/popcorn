@@ -29,7 +29,7 @@ def extract(P, u, grad_u,   NJ, grad_NJ,
     return RI, KIJ
 
 def gateaux(f, u, N, dNdx):
-    R = [ Matrix([f]).diff(ui) * NA + Matrix([f]).jacobian(grad(u)[i,:]) * dNdx[:,A]
+    R = [ Matrix([f]).diff(ui) * NA + Matrix([f]).jacobian(grad(u)[:,i]) * dNdx[:,A]
               for A,NA in enumerate(N)
               for i,ui in enumerate(u) ]
     # TODO: Reshape this guy
