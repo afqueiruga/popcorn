@@ -21,7 +21,19 @@ class PopcornVariable(ImmutableDenseMatrix):
             C = super(PopcornVariable, cls).__new__(cls, m)
         except Exception as e:
             # Can't do the MatrixRepresentation...
-            C = super(PopcornVariable, cls).__new__(cls, MyMat(name,1,offset=offset[0]))
+            C = super(PopcornVariable, cls)\
+              .__new__(cls,MyMat(name,1,
+                                offset=sum([a
+        for i,a in enumerate(offset)])))
+            # if rank==0:
+            #     C = super(PopcornVariable, cls)\
+            #       .__new__(cls,MyMat(name,1,offset=offset[0]))
+            # elif rank==1:
+            #     C = super(PopcornVariable, cls)\
+            #       .__new__(cls,MyMat(name,dim,offset=offset[0]))
+            # else:
+            #     C = super(PopcornVariable, cls)\
+            #       .__new__(cls,MyMat(name,dim,dim,offset=offset))
             C.bad = True
         C.name = name
         C.rank = rank
@@ -66,7 +78,7 @@ class PopcornVariable(ImmutableDenseMatrix):
     
     def View(self,offset):
         return PopcornVariable(self.name,self.dim,self.rank,
-                                   [a+b for a,b in zip(self.offset,offset)])
+                                   [(a+b)*self.dim**(self.rank-i-1) for i,(a,b) in enumerate(zip(self.offset,offset))])
 
     def as_matrix(self):
         if self.rank==0:
