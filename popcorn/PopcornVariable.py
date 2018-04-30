@@ -1,6 +1,6 @@
 import boilerplates as b
 from util import *
-from sympy import ccode, Symbol, sympify, ImmutableDenseMatrix
+from sympy import ccode, Symbol, sympify, ImmutableDenseMatrix, expand
 
 import popcorn_globals
 
@@ -23,8 +23,7 @@ class PopcornVariable(ImmutableDenseMatrix):
             # Can't do the MatrixRepresentation...
             C = super(PopcornVariable, cls)\
               .__new__(cls,MyMat(name,1,
-                                offset=sum([a
-        for i,a in enumerate(offset)])))
+                                 offset=sum([a for i,a in enumerate(offset)])))
             # if rank==0:
             #     C = super(PopcornVariable, cls)\
             #       .__new__(cls,MyMat(name,1,offset=offset[0]))
@@ -62,9 +61,9 @@ class PopcornVariable(ImmutableDenseMatrix):
         if len(index)>self.rank:
             index = index[:self.rank]
         
-        S=sum([s*(i+o) for s,i,o in zip(self.lda,index,self.offset)])
+        S=sum([s*(i)+o for s,i,o in zip(self.lda,index,self.offset)])
         
-        return Symbol("{0}[{1}]".format(self.name,ccode(sympify(S))),real=True)
+        return Symbol("{0}[{1}]".format(self.name,ccode(expand(S))),real=True)
     def __iter__(self):
         if type(self.dim) is int:
             return iter(self.as_matrix())
