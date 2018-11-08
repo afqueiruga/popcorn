@@ -3,7 +3,7 @@ import unittest as ut
 from popcorn import *
 
 class MakeSpringHusk(ut.TestCase):
-    def test(self):
+    def test_generate(self):
         Vector = DofSpace(2,0,2) # vector on each vertex
         Param  = DofSpace(1,-1) # global
         i_x = Input('x',Vector) # original position
@@ -23,3 +23,4 @@ class MakeSpringHusk(ut.TestCase):
                        Asgn(o_K,K,'=')
                        ])
         Husk('spring')
+        import husk_spring
