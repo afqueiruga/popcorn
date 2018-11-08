@@ -5,7 +5,4 @@
 # snippets.
 #
 
-import general
-import afq_wrap
-import lang
-import pylink
+from . import general, afq_wrap, lang, pylink
