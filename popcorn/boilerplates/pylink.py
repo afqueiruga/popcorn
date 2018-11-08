@@ -168,6 +168,7 @@ set(CMAKE_SWIG_FLAGS "")
 find_package(PythonLibs 2.7 REQUIRED)
 include_directories(${{PYTHON_INCLUDE_PATH}})
 include_directories(${{KERNEL_INCLUDES}})
+include_directories(${{GSL_INCLUDE_DIRS}})
 
 swig_add_module(${{huskname}}_lib python ${{huskname}}_swig.i ${{KERNEL_FILES}})
 set_property(SOURCE ${{KERNEL_FILES}} APPEND_STRING PROPERTY COMPILE_FLAGS " -fPIC")
