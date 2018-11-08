@@ -13,6 +13,6 @@ setup(
     keywords = "",
     test_suite="test",
     packages=['popcorn'],
-    long_description=read('Readme.md'),
+    long_description=read('README.md'),
     classifiers=[],
 )
