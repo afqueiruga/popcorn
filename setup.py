@@ -1,5 +1,5 @@
 import os
-from setuptools import setup
+from setuptools import setup, find_packages
 
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
@@ -12,7 +12,8 @@ setup(
     license = "GPL",
     keywords = "",
     test_suite="test",
-    packages=['popcorn'],
+    # packages=['popcorn'],
+    packages=find_packages(exclude=['test']),
     long_description=read('README.md'),
     classifiers=[],
 )
