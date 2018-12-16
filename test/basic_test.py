@@ -23,4 +23,5 @@ class MakeSpringHusk(ut.TestCase):
                        Asgn(o_K,K,'=')
                        ])
         Husk('spring')
-        import husk_spring
+        # import husk_spring
+        
