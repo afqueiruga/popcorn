@@ -1,9 +1,9 @@
-from boilerplates import general as g
-from boilerplates import afq_wrap as aw
-from codegenutil import *
+from .boilerplates import general as g
+from .boilerplates import afq_wrap as aw
+from .codegenutil import *
 from util import *
-import lang
-import popcorn_globals
+from . import lang
+from . import popcorn_globals
 
 from sympy import ccode
 
