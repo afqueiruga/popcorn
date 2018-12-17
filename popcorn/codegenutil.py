@@ -1,3 +1,4 @@
+from __future__ import print_function
 from sympy import ccode, Matrix
 
 def assignment(expr,asgn, op="="):
@@ -18,6 +19,6 @@ def emit(l):
     try:
         return l.emit()
     except AttributeError as err:
-        print "Object with no emit:", l, err
+        print("Object with no emit:", l, err)
         #l.emit()
         return l

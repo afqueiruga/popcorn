@@ -1,14 +1,14 @@
 from __future__ import print_function
-import boilerplates as b
-from util import *
+from . import boilerplates as b
+from .util import *
 from sympy import ccode, Symbol, sympify, ImmutableDenseMatrix, expand
 
-import popcorn_globals
+from . import popcorn_globals
 
 class PopcornVariable(ImmutableDenseMatrix):
     def __new__(cls,  name, dim, rank,  offset=None ):
         if offset == None:
-            offset = tuple([0 for i in xrange(rank if rank>0 else 1)])
+            offset = tuple([0 for i in range(rank if rank>0 else 1)])
         if not hasattr(offset,"__getitem__"):
             offset=(offset,)
         try:
@@ -39,7 +39,7 @@ class PopcornVariable(ImmutableDenseMatrix):
         C.rank = rank
         C.dim = dim
         C.offset = offset
-        C.lda = tuple([ dim**(rank-i-1) for i in xrange(rank)])
+        C.lda = tuple([ dim**(rank-i-1) for i in range(rank)])
         return C
 
     def emit(self):
@@ -130,7 +130,7 @@ class Input( PopcornVariable ):
                 raise Exception("Can't seperate vertices for variable length inputs")
             else:
                 return [ self.Vertex_Handle(i)
-                        for i in xrange(self.dspace.v_end-self.dspace.v_start) ]
+                        for i in range(self.dspace.v_end-self.dspace.v_start) ]
         except TypeError:
             raise Exception("Can't seperate entries for variable length inputs")
         

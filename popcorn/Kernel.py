@@ -1,7 +1,7 @@
 from .boilerplates import general as g
 from .boilerplates import afq_wrap as aw
 from .codegenutil import *
-from util import *
+from .util import *
 from . import lang
 from . import popcorn_globals
 
@@ -98,11 +98,11 @@ class Kernel():
         return aw.eval_wr.format(self.name, argstring)
 
     def afq_kernel_struct(self):
-        kmap_codes = "\n".join( k.emit(self.name+str(i)) for k,i in self.spaces.iteritems() )
+        kmap_codes = "\n".join( k.emit(self.name+str(i)) for k,i in iter(self.spaces.items()) )
 
 
         
-        list_kmaps = ",\n".join([ k.name(self.name+str(i)) for k,i in self.spaces.iteritems() ])
+        list_kmaps = ",\n".join([ k.name(self.name+str(i)) for k,i in iter(self.spaces.items()) ])
         code_kmap = aw.strct_kernel_kmaps.format(len(self.spaces.keys()),list_kmaps)
 
         list_inps = [ aw.strct_inp_t.format(i,self.spaces[inp.dspace],inp.name)

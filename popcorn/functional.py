@@ -2,9 +2,9 @@
 Generic tools for functional implementation
 
 """
-from PopcornVariable import PopcornVariable
+from .PopcornVariable import PopcornVariable
 from sympy import Matrix, eye
-import popcorn_globals
+from . import popcorn_globals
 
 class Field( PopcornVariable):
     def __new__(cls, name, gdim, rank):
@@ -53,8 +53,8 @@ def field_keys( *args ):
 #
 def inner(A,B):
     s = 0
-    for i in xrange(A.shape[0]):
-        for j in xrange(A.shape[1]):
+    for i in range(A.shape[0]):
+        for j in range(A.shape[1]):
             s += A[i,j]*B[i,j]
     return s
 def sym(A):

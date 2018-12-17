@@ -1,4 +1,4 @@
-from util import *
+from .util import *
 
 class DofSpace():
     def __init__(self, gdim, v_start=0, v_end=Symbol("l_edge"), v_stride=1):

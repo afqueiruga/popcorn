@@ -1,6 +1,6 @@
-from util import *
-from codegenutil import *
-import boilerplates as b
+from .util import *
+from .codegenutil import *
+from . import boilerplates as b
 
 def freesym(x):
     try:
@@ -23,9 +23,9 @@ class Asgn():
         from itertools import product as PRI
         lines = ["/* Evaluation of {0} */".format(self.asgn.name) ]
         try:
-            it =  PRI(*[xrange(j) for j in self.expr.shape])
+            it =  PRI(*[range(j) for j in self.expr.shape])
         except:
-            it = xrange(len(self.expr))
+            it = range(len(self.expr))
         for i in it:
             lines += [ ccode( self.expr[i],self.asgn[i] ).replace(" =",self.op) ]
         #lines += [ ccode( a, b).replace(" =",self.op) for a,b in zip( self.asgn, self.expr ) ]

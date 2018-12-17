@@ -1,6 +1,6 @@
-from boilerplates import pylink as BP
+from .boilerplates import pylink as BP
 from subprocess import call
-import popcorn_globals
+from . import popcorn_globals
 
 def Husk(libname,kernels=None,installdir=".",config=BP.config_linux):
     targetdir = installdir + "/husk_" + libname + "/"
