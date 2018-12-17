@@ -33,3 +33,15 @@ class InitializeInputs(ut.TestCase):
         vector2d = Field('vector2d',2,1)
         self.assertTupleEqual(vector2d.shape,(2,1))
         self.assertEqual(vector2d.dim,2)
+        
+class TestIndexing(ut.TestCase):
+    def test_inbounds_index(self):
+        a = PopcornVariable('aa',3,1)
+        self.assertIsInstance(a[0],Symbol)
+        self.assertIsInstance(a[1],Symbol)
+        with self.assertRaises(IndexError):
+            a[3]
+    def test_symbol_index(self):
+        II = Symbol('II')
+        a = PopcornVariable('aa',1,1)
+        self.assertIsInstance(a[II],Symbol)
