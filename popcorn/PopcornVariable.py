@@ -53,12 +53,13 @@ class PopcornVariable(ImmutableDenseMatrix):
         Extra logic to handle the case where index is not an int, or 
         the variable has an indefinite length.
         """
-        try:
-            return super(PopcornVariable, self).__getitem__( index)
-        except IndexError as e:
-            raise e
-        except AttributeError as e:
-            pass
+        if isinstance(index,int) or isinstance(index,tuple):
+            try:
+                return super(PopcornVariable, self).__getitem__( index)
+            except IndexError as e:
+                raise e
+            except AttributeError as e:
+                pass
         # TODO raise an error on infinite recursion
         if not hasattr(index,"__iter__"):
             index = (index,)
