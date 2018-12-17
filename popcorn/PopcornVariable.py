@@ -1,3 +1,4 @@
+from __future__ import print_function
 import boilerplates as b
 from util import *
 from sympy import ccode, Symbol, sympify, ImmutableDenseMatrix, expand
@@ -54,21 +55,27 @@ class PopcornVariable(ImmutableDenseMatrix):
         """
         try:
             return super(PopcornVariable, self).__getitem__( index)
-        except: # IndexError, AttributeError:
+        except IndexError as e:
+            raise e
+        except AttributeError as e:
             pass
+        # TODO raise an error on infinite recursion
         if not hasattr(index,"__iter__"):
             index = (index,)
         if len(index)>self.rank:
             index = index[:self.rank]
-        
         S=sum([s*(i)+o for s,i,o in zip(self.lda,index,self.offset)])
-        
         return Symbol("{0}[{1}]".format(self.name,ccode(expand(S))),real=True)
-    def __iter__(self):
-        if type(self.dim) is int:
-            return iter(self.as_matrix())
-        else:
-            return None
+    # def __iter__(self):
+    #     try:
+    #         return iter(self.as_matrix())
+    #     except Exception as e:
+    #         return 
+    #         # return iter(self)
+        # if type(self.dim) is int:
+        #     return iter(self.as_matrix())
+        # else:
+        #     return None
     def func(self, *args):
         """
         These should never be interpretted as expressions, only roots.
@@ -80,6 +87,9 @@ class PopcornVariable(ImmutableDenseMatrix):
                                    [(a+b)*self.dim**(self.rank-i-1) for i,(a,b) in enumerate(zip(self.offset,offset))])
 
     def as_matrix(self):
+        """
+        Return a more sanitized Matrix type
+        """
         if self.rank==0:
             # return Symbol(self.name+"[{0}]".format(self.offset[0]),real=True)
             return MyMat(self.name,1,offset=self.offset[0])
