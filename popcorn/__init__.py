@@ -5,7 +5,7 @@ from .lang import Asgn, IfElse, Loop, DebugPrint
 from .util import MyMat
 
 from .Kernel import Kernel
-from .husker import Husk
+from .husker import Husk, Husk_ctx
 # User propbably wants this
 from sympy import *
 

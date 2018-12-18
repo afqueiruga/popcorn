@@ -2,6 +2,12 @@ from .boilerplates import pylink as BP
 from subprocess import call
 from . import popcorn_globals
 
+from contextlib import contextmanager
+@contextmanager
+def Husk_ctx(libname, installdir="."):
+    yield
+    Husk(libname,installdir)
+
 def Husk(libname,kernels=None,installdir=".",config=BP.config_linux):
     targetdir = installdir + "/husk_" + libname + "/"
     call(['mkdir','-p',targetdir])
