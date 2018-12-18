@@ -59,9 +59,13 @@ class PopcornVariable(ImmutableDenseMatrix):
             try:
                 return super(PopcornVariable, self).__getitem__(index)
             except IndexError as e:
+                # raise e
                 try:
                     if not self.variable_length:
                         raise e
+                    else:
+                        if index>1000:
+                            raise AssertionError('Infinite looping through PopcornVariable?')
                 except AttributeError:
                     raise e
             except AttributeError as e:
@@ -74,12 +78,15 @@ class PopcornVariable(ImmutableDenseMatrix):
         S=sum([s*(i)+o for s,i,o in zip(self.lda,index,self.offset)])
         return Symbol("{0}[{1}]".format(self.name,ccode(expand(S))),real=True)
         
-    # def __iter__(self):
-    #     try:
-    #         return iter(self.as_matrix())
-    #     except Exception as e:
-    #         return 
-    #         # return iter(self)
+    @property
+    def free_symbols(self):
+        return self.as_matrix().free_symbols
+        
+    def __iter__(self):
+        try:
+            return iter(self.as_matrix())
+        except Exception as e:
+            raise e
         # if type(self.dim) is int:
         #     return iter(self.as_matrix())
         # else:
@@ -100,14 +107,21 @@ class PopcornVariable(ImmutableDenseMatrix):
         """
         Return a more sanitized Matrix type
         """
-        if self.rank==0:
-            # return Symbol(self.name+"[{0}]".format(self.offset[0]),real=True)
-            return MyMat(self.name,1,offset=self.offset[0])
-        elif self.rank==1:
-            return MyMat(self.name,self.dim,offset=self.offset)
-        else:
-            return MyMat(self.name, self.dim,self.dim,offset=self.offset )
+        try:
+            if self.variable_length:
+                return MyMat(self.name,1,offset=self.offset[0])
+            elif self.rank==0:
+                # return Symbol(self.name+"[{0}]".format(self.offset[0]),real=True)
+                return MyMat(self.name,1,offset=self.offset[0])
+            elif self.rank==1:
+                return MyMat(self.name,self.dim,offset=self.offset)
+            else:
+                return MyMat(self.name, self.dim,self.dim,offset=self.offset )
     
+                
+        except AttributeError as e:
+            return Matrix([self])
+            
 
 
 class Input( PopcornVariable ):

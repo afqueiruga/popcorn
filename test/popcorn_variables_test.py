@@ -55,3 +55,31 @@ class TestIndexing(ut.TestCase):
         self.assertIsInstance(o_z[Symbol('II')],Symbol)
         self.assertIsInstance(o_z[1],Symbol)
         
+class TestSanititation(ut.TestCase):
+    def test_as_matrix(self):
+        Fixed = DofSpace(3,0,1)
+        i_a = Input('a_as_matrix',Fixed)
+        mat = i_a.as_matrix()
+        self.assertTupleEqual(mat.shape,(3,1))
+        
+        Variable = DofSpace(3,0)
+        i_b = Input('b_as_matrix',Variable)
+        mat = i_b.as_matrix()
+        self.assertTupleEqual(mat.shape,(1,1))
+        
+    def test_iter(self):
+        Fixed = DofSpace(3,0,1)
+        i_a = Input('a_as_matrix',Fixed)
+        cnt = 0
+        for x in i_a:
+            cnt += 1
+            print(x)
+        self.assertEqual(cnt,3)
+        
+        Variable = DofSpace(3,0)
+        i_b = Input('b_as_matrix',Variable)
+        cnt = 0
+        for x in i_b:
+            cnt += 1
+            print(x)
+        self.assertEqual(cnt,1)

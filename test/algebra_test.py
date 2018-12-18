@@ -38,4 +38,4 @@ class AlgebraTest(ut.TestCase):
         expr = inner(u,u) + inner(tu,Matrix([1,0]))
         self.assertIsInstance(expr, Add)
         g = gateaux(expr,u,Matrix([[1]]),Matrix([[1],[1]]))
-        
+    
