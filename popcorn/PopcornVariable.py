@@ -20,11 +20,13 @@ class PopcornVariable(ImmutableDenseMatrix):
                 m= MyMat(name, dim,dim,offset=offset)
             
             C = super(PopcornVariable, cls).__new__(cls, m)
+            C.variable_length = False
         except Exception as e:
             # Can't do the MatrixRepresentation...
             C = super(PopcornVariable, cls)\
               .__new__(cls,MyMat(name,1,
                                  offset=sum([a for i,a in enumerate(offset)])))
+            C.variable_length = True
             # if rank==0:
             #     C = super(PopcornVariable, cls)\
             #       .__new__(cls,MyMat(name,1,offset=offset[0]))
@@ -34,7 +36,6 @@ class PopcornVariable(ImmutableDenseMatrix):
             # else:
             #     C = super(PopcornVariable, cls)\
             #       .__new__(cls,MyMat(name,dim,dim,offset=offset))
-            C.bad = True
         C.name = name
         C.rank = rank
         C.dim = dim
@@ -56,9 +57,13 @@ class PopcornVariable(ImmutableDenseMatrix):
         # if isinstance(index,int) or isinstance(index,tuple):
         if not isinstance(index,Symbol):
             try:
-                return super(PopcornVariable, self).__getitem__( index)
+                return super(PopcornVariable, self).__getitem__(index)
             except IndexError as e:
-                raise e
+                try:
+                    if not self.variable_length:
+                        raise e
+                except AttributeError:
+                    raise e
             except AttributeError as e:
                 pass
         # TODO raise an error on infinite recursion
@@ -68,6 +73,7 @@ class PopcornVariable(ImmutableDenseMatrix):
             index = index[:self.rank]
         S=sum([s*(i)+o for s,i,o in zip(self.lda,index,self.offset)])
         return Symbol("{0}[{1}]".format(self.name,ccode(expand(S))),real=True)
+        
     # def __iter__(self):
     #     try:
     #         return iter(self.as_matrix())
@@ -78,6 +84,7 @@ class PopcornVariable(ImmutableDenseMatrix):
         #     return iter(self.as_matrix())
         # else:
         #     return None
+        
     def func(self, *args):
         """
         These should never be interpretted as expressions, only roots.
@@ -86,7 +93,8 @@ class PopcornVariable(ImmutableDenseMatrix):
     
     def View(self,offset):
         return PopcornVariable(self.name,self.dim,self.rank,
-                                   [(a+b)*self.dim**(self.rank-i-1) for i,(a,b) in enumerate(zip(self.offset,offset))])
+                               [(a+b)*self.dim**(self.rank-i-1) 
+                                for i,(a,b) in enumerate(zip(self.offset,offset))])
 
     def as_matrix(self):
         """

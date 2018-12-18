@@ -41,7 +41,17 @@ class TestIndexing(ut.TestCase):
         self.assertIsInstance(a[1],Symbol)
         with self.assertRaises(IndexError):
             a[3]
+            
     def test_symbol_index(self):
         II = Symbol('II')
         a = PopcornVariable('aa',1,1)
         self.assertIsInstance(a[II],Symbol)
+        
+    def test_variable_output_index(self):
+        varout = DofSpace(2,0)
+        o_z = Output('z',[varout],1)
+        self.assertIsInstance(o_z,PopcornVariable)
+        self.assertIsInstance(o_z[0],Symbol)
+        self.assertIsInstance(o_z[Symbol('II')],Symbol)
+        self.assertIsInstance(o_z[1],Symbol)
+        
