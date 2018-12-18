@@ -83,3 +83,9 @@ class TestSanititation(ut.TestCase):
             cnt += 1
             print(x)
         self.assertEqual(cnt,1)
+        
+class TestHandles(ut.TestCase):
+    def test_vertex_handle(self):
+        Fixed = DofSpace(3,0,1)
+        i_a = Input('a_vert_handle',Fixed)
+        self.assertTupleEqual(i_a.Vertex_Handle(0).shape, (3,1))
