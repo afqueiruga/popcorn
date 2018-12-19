@@ -49,7 +49,6 @@ class PatternsTest(ut.TestCase):
         ]).Write_Module()
         
     def test_variable_expr(self):
-        # TODO I want this to work
         II, l_edge = symbols('II l_edge')
         Variable = DofSpace(3,0)
         i_b = Input('b4',Variable)

@@ -22,7 +22,7 @@ def Husk(libname,kernels=None,installdir=".",config=BP.config_linux):
     d = {"libname":libname,"kernels":" ".join(kernelnames)}
     d.update(config)
     
-    # mf = open(targetdir+"Makefile","w")    
+    # mf = open(targetdir+"Makefile","w")
     # mf.write(BP.makefile.format(**d))
     # mf.close()
 
