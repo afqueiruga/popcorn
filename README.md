@@ -33,4 +33,6 @@ Popcorn is designed for Ahead-Of-Time compilation.
 
 Copyright (C) Alejandro Francisco Queiruga, Lawrence Berkeley National Lab, 2016-2018
 
-As with cornflakes, the license is also LGPL3 as per LICENSE.txt. Note that the output of popcorn, the transpiled C and Python source, are free of this license, such that the C files may be freely incorporated into another software. However, I would appreciate a citation or the note that Popcorn was used to generate some of the source code in your documentation.
+As with cornflakes, the license is also LGPL3 as per LICENSE.txt.
+Note that the output of popcorn, the transpiled C and Python source, are free of this license, such that the C files may be freely incorporated into another software.
+However, a citation or the note that Popcorn was used to generate some of the source code in your public-facing documentation would be very much appreciated.
