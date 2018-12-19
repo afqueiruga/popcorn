@@ -16,4 +16,8 @@ setup(
     packages=find_packages(exclude=['test']),
     long_description=read('README.md'),
     classifiers=[],
+    install_requires=[
+        'oset',
+        'sympy'
+    ]
 )
