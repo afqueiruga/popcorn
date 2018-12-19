@@ -55,6 +55,22 @@ class TestIndexing(ut.TestCase):
         self.assertIsInstance(o_z[Symbol('II')],Symbol)
         self.assertIsInstance(o_z[1],Symbol)
         
+    def test_fixed_tuple_indexing(self):
+        Fixed = DofSpace(2,0,2)
+        o_z = Output('z',[Fixed],1)
+        self.assertIsInstance(o_z[0,0],Symbol)
+        self.assertIsInstance(o_z[1,0],Symbol)
+        self.assertIsInstance(o_z[2,0],Symbol)
+        with self.assertRaises(IndexError):
+            o_z[5,0]
+
+    def test_variable_tuple_indexing(self):
+        varout = DofSpace(2,0)
+        o_z = Output('z',[varout],1)
+        self.assertIsInstance(o_z[0,0],Symbol)
+        self.assertIsInstance(o_z[1,0],Symbol)
+        self.assertIsInstance(o_z[2,0],Symbol)
+        
 class TestSanititation(ut.TestCase):
     def test_as_matrix(self):
         Fixed = DofSpace(3,0,1)

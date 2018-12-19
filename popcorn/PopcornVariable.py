@@ -64,8 +64,17 @@ class PopcornVariable(ImmutableDenseMatrix):
                     if not self.variable_length:
                         raise e
                     else:
-                        if index>1000:
+                        detect = False
+                        try:
+                            for a in index:
+                                if a>1000:
+                                    detect = False
+                        except TypeError:
+                            if index>1000:
+                                detect = False
+                        if detect:
                             raise AssertionError('Infinite looping through PopcornVariable?')
+                        
                 except AttributeError:
                     raise e
             except AttributeError as e:
@@ -87,11 +96,7 @@ class PopcornVariable(ImmutableDenseMatrix):
             return iter(self.as_matrix())
         except Exception as e:
             raise e
-        # if type(self.dim) is int:
-        #     return iter(self.as_matrix())
-        # else:
-        #     return None
-        
+    
     def func(self, *args):
         """
         These should never be interpretted as expressions, only roots.
@@ -117,8 +122,6 @@ class PopcornVariable(ImmutableDenseMatrix):
                 return MyMat(self.name,self.dim,offset=self.offset)
             else:
                 return MyMat(self.name, self.dim,self.dim,offset=self.offset )
-    
-                
         except AttributeError as e:
             return Matrix([self])
             
