@@ -73,8 +73,7 @@ class PopcornVariable(ImmutableDenseMatrix):
                             if index>1000:
                                 detect = False
                         if detect:
-                            raise AssertionError('Infinite looping through PopcornVariable?')
-                        
+                            raise AssertionError('Infinite looping through PopcornVariable'+self.name+'?')
                 except AttributeError:
                     raise e
             except AttributeError as e:
