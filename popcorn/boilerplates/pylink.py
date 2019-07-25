@@ -165,8 +165,9 @@ find_package(GSL REQUIRED)
 find_package(SWIG REQUIRED)
 include(${{SWIG_USE_FILE}})
 set(CMAKE_SWIG_FLAGS "")
-find_package(PythonLibs 2.7 REQUIRED)
-include_directories(${{PYTHON_INCLUDE_PATH}})
+find_package(Python3 3.7 REQUIRED COMPONENTS Interpreter Development)
+include_directories(${{Python3_INCLUDE_DIRS}})
+
 include_directories(${{KERNEL_INCLUDES}})
 include_directories(${{GSL_INCLUDE_DIRS}})
 
@@ -179,5 +180,5 @@ else()
   set(link_to_cornflakes_for_swig swig_cornflakes)
 endif()
 
-swig_link_libraries(${{huskname}}_lib m ${{GSL_LIBRARIES}} ${{PYTHON_LIBRARIES}}  ${{link_to_cornflakes_for_swig}} ${{CORNFLAKES_LIBRARIES}})
+swig_link_libraries(${{huskname}}_lib m ${{GSL_LIBRARIES}} ${{Python3_LIBRARIES}}  ${{link_to_cornflakes_for_swig}} ${{CORNFLAKES_LIBRARIES}})
 """
