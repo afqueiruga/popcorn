@@ -6,6 +6,8 @@ def freesym(x):
     try:
         return x.free_symbols
     except:
+        if isinstance(x, str):
+            return set()
         try:
             return set.union(*[ freesym(y) for y in x ])
         except:

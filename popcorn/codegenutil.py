@@ -16,6 +16,8 @@ def assignment(expr,asgn, op="="):
 
 
 def emit(l):
+    if isinstance(l, str):
+        return l
     try:
         return l.emit()
     except AttributeError as err:
