@@ -128,7 +128,7 @@ try:
 except ImportError:
     call(['rm','-r','CMakeFiles'], cwd=p)
     call(['rm','CMakeCache.txt'], cwd=p)
-    call(['cmake',p], cwd=p)
+    call(['$CMAKE_COMMAND',p], cwd=p)
     call(['make'],  cwd=p)
     from . import {libname}_lib
 {0}
@@ -147,6 +147,7 @@ cmakelists_add_src = " ${{CMAKE_CURRENT_SOURCE_DIR}}/{0}.c "
 
 
 cmakelists2 = """
+project({{huskname}})
 cmake_minimum_required(VERSION 2.8.9)
 
 set(huskname {libname})
