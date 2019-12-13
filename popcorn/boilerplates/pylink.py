@@ -119,7 +119,7 @@ bigheader = """
 """
 
 initfile = """\
-from subprocess import call
+from subprocess import call, run
 import os
 p = os.path.dirname(os.path.abspath(__file__))
 call(['make'], cwd=p)
@@ -128,7 +128,7 @@ try:
 except ImportError:
     call(['rm','-r','CMakeFiles'], cwd=p)
     call(['rm','CMakeCache.txt'], cwd=p)
-    call(['$CMAKE_COMMAND',p], cwd=p)
+    run("$CMAKE_COMMAND {{p}}".format(p=p), cwd=p,shell=True)
     call(['make'],  cwd=p)
     from . import {libname}_lib
 {0}
